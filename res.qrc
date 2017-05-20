@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>resources/intel.png</file>
+        <file>resources/normal.png</file>
+        <file>resources/ulti.png</file>
+        <file>resources/enemy1.png</file>
+        <file>resources/frost.png</file>
+        <file>resources/arrow.png</file>
+        <file>resources/fireArrow.png</file>
+        <file>icon.ico</file>
+        <file>resources/background.jpg</file>
+        <file>resources/gameOver.png</file>
+        <file>resources/frostArrow.png</file>
+        <file>resources/intelArrow.png</file>
+        <file>resources/ultiArrow.png</file>
+        <file>resources/tiles.png</file>
+    </qresource>
+</RCC>
