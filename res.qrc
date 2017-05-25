@@ -1,10 +1,5 @@
 <RCC>
     <qresource prefix="/img">
-        <file>resources/intel.png</file>
-        <file>resources/normal.png</file>
-        <file>resources/ulti.png</file>
-        <file>resources/enemy1.png</file>
-        <file>resources/frost.png</file>
         <file>resources/arrow.png</file>
         <file>resources/fireArrow.png</file>
         <file>icon.ico</file>
@@ -14,5 +9,13 @@
         <file>resources/intelArrow.png</file>
         <file>resources/ultiArrow.png</file>
         <file>resources/tiles.png</file>
+        <file>resources/gameBackground.jpg</file>
+        <file>resources/normal.png</file>
+        <file>resources/frost.png</file>
+        <file>resources/intel.png</file>
+        <file>resources/ulti.png</file>
+        <file>resources/flameEnemy.png</file>
+        <file>resources/smoke.png</file>
+        <file>resources/superGreen.png</file>
     </qresource>
 </RCC>

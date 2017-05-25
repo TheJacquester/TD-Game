@@ -23,8 +23,10 @@ public:
     ~Enemy();
     qreal collisionRadius = 70; //collision radius
     void takeDamage(int damage);
+    void setHopSkipMax(int value);
+
 private:
-//properties
+    //properties
     int W, H; //width and height of enemy pixmap
     int pathPos = 0;
     int healthMax;
@@ -32,14 +34,17 @@ private:
     int gold = 2;
 
 //visual
+    int spriteCount = 0;
     QGraphicsRectItem *healthBar;
-    qreal healthBarMax = 500;
+    qreal healthBarMax, healthBarHeight = 5;
     void updateHealtBar();
 
 //linear movement
     qreal t = 0; //parameterized point on path line
     const qreal stepSize = 0.15;
     QLineF l; //line between points of enemy path
+    int hopSkipMax = 0; //Controls enemy speed
+    int hopSkipCount = 0;
 
 //map
     Tile *currentTile;

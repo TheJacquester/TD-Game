@@ -17,4 +17,5 @@ FrostTower::FrostTower()
     //Bullet
     setBulletDamage(5);
     bulletPixPath = ":/img/resources/frostArrow.png";
+    setRange(800);
 }

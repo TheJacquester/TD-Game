@@ -57,7 +57,6 @@ void Bullet::detectEnemy()
             qreal enemyDist = QLineF(this->pos(),enemy->pos()).length();
             if (enemyDist < enemy->collisionRadius)
             {
-                qDebug() << "enemy hit";
                 enemy->takeDamage(damage);
                 this->deleteLater();
             }

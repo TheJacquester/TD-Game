@@ -19,4 +19,5 @@ NormalTower::NormalTower()
     //Bullet
     setBulletDamage(2);
     bulletPixPath = ":/img/resources/fireArrow.png";
+    setRange(800);
 }

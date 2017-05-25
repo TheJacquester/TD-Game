@@ -15,6 +15,7 @@ UltiTower::UltiTower()
     setZValue(zMax);
 
     //Bullet
-    setBulletDamage(25);
+    setBulletDamage(40);
     bulletPixPath = ":/img/resources/ultiArrow.png";
+    setRange(1000);
 }

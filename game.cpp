@@ -13,6 +13,7 @@ Game::Game()
 void Game::loadInterface()
 {
 //Place game window in the center of the screen
+    showFullScreen();
     move(QApplication::desktop()->screen()->rect().center() - this->rect().center());
 
     this->setWindowTitle("Legion TD");
@@ -28,7 +29,7 @@ void Game::loadInterface()
 
 //Graphics Scene and View
     scene = new QGraphicsScene(this);
-//    scene->setBackgroundBrush(QBrush(QPixmap::fromImage(QImage(backgroundPath))));
+    scene->setBackgroundBrush(QBrush(QImage(backgroundPath)));
     view = new QGraphicsView(scene);
     view->setMinimumSize(minSceneW,minSceneH);
     view->setMouseTracking(true);
@@ -54,6 +55,9 @@ void Game::loadInterface()
 
 //Timing
     initTimers();
+
+//Enemies
+    initEnemyPixmap();
 }
 
 void Game::startGame()
@@ -65,6 +69,7 @@ void Game::startGame()
     fireTimer->start();
     waveTimer->start();
     secTimer->start();
+//    QSound::play("C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10/resources/oboe.wav");
 }
 
 void Game::hostMode()
@@ -93,7 +98,7 @@ void Game::singlePlayerMode()
 
 void Game::gameOver()
 {
-    timer->stop();
+    timer->stop(); //Main Game timer (e.g. arrow steps)
     bulletTimer->stop();
     fireTimer->stop();
     waveTimer->stop();
@@ -141,6 +146,14 @@ void Game::spawnEnemy()
     enemies.append(e);
     connect(timer,SIGNAL(timeout()),e,SLOT(hop()));
     scene->addItem(enemies.last());
+}
+
+void Game::initEnemyPixmap()
+{
+    QPixmap p = QPixmap(enemyPixmapPath);
+    int w = 25, h = 25;
+    for(int i = 0; i <= 10; ++i )
+        enemySprites.append(p.copy(i*w,0,w,h));
 }
 
 void Game::initHost()
@@ -216,12 +229,31 @@ void Game::setLives(int value)
     lives = value;
 }
 
+void Game::waveStart()
+{
+    towerPane->setTowerPaneEnabled(false);
+    info->nextWave->setEnabled(false);
+    info->quitGame->setEnabled(false);
+    waveActive = true;
+    waveTimer->stop();
+}
+
+void Game::waveStop()
+{
+    waveActive = false;
+    towerPane->setAffordableTowers(info->getGold());
+    info->nextWave->setEnabled(true);
+    info->quitGame->setEnabled(true);
+    waveTimer->start();
+}
+
 void Game::nextWave()
 {
     if (firstWave)
     {
         firstWave = false;
         spawnTimer->start();
+        waveStart();
     }
     else
     {
@@ -230,6 +262,7 @@ void Game::nextWave()
         healtMax += 60;
         spawnCount = 0;
         info->setWave(wave);
+        waveStart();
     }
 }
 

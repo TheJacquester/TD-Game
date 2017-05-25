@@ -11,13 +11,13 @@ MAKEFILE      = Makefile.Release
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DUNICODE -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
-CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -Wall -Wextra $(DEFINES)
-CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -std=gnu++11 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I. -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtWidgets -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtGui -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtANGLE -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtNetwork -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtCore -Irelease -IC:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\win32-g++ 
+DEFINES       = -DUNICODE -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
+CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -g -Wall -Wextra $(DEFINES)
+CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -g -std=gnu++11 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
+INCPATH       = -I. -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtWidgets -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtMultimedia -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtGui -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtANGLE -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtNetwork -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtCore -Irelease -IC:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\win32-g++ 
 LINKER      =        g++
-LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
-LIBS        =        -lmingw32 -LC:\Qt\Qt5.8.0\5.8\mingw53_32\lib C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libqtmain.a -LC:\utils\my_sql\my_sql\lib -LC:\utils\postgresql\pgsql\lib -lshell32 C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Widgets.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Gui.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Network.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Core.a release\Legion_TD_V1_resource_res.o 
+LFLAGS        =        -Wl,-subsystem,windows -mthreads
+LIBS        =        -lmingw32 -LC:\Qt\Qt5.8.0\5.8\mingw53_32\lib C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libqtmain.a -LC:\utils\my_sql\my_sql\lib -LC:\utils\postgresql\pgsql\lib -lshell32 C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Widgets.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Multimedia.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Gui.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Network.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Core.a release\Legion_TD_V1_resource_res.o 
 QMAKE         = C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -135,24 +135,25 @@ all: Makefile.Release  $(DESTDIR_TARGET)
 
 $(DESTDIR_TARGET):  $(OBJECTS) release/Legion_TD_V1_resource_res.o
 	$(LINKER) $(LFLAGS) -o $(DESTDIR_TARGET) object_script.Legion_TD_V1.Release  $(LIBS)
+	objcopy --only-keep-debug release/Legion_TD_V1.exe release/Legion_TD_V1.exe.debug && objcopy --strip-debug release/Legion_TD_V1.exe && objcopy --add-gnu-debuglink=release/Legion_TD_V1.exe.debug release/Legion_TD_V1.exe
 
 release/Legion_TD_V1_resource_res.o: Legion_TD_V1_resource.rc
 	windres -i Legion_TD_V1_resource.rc -o release\Legion_TD_V1_resource_res.o --include-dir=. $(DEFINES)
 
 qmake: FORCE
-	@$(QMAKE) -o Makefile.Release Legion_TD_V10.pro -spec win32-g++
+	@$(QMAKE) -o Makefile.Release Legion_TD_V10.pro -spec win32-g++ "CONFIG+=qml_debug" "CONFIG+=force_debug_info" "CONFIG+=separate_debug_info"
 
 qmake_all: FORCE
 
 dist:
-	$(ZIP) Legion_TD_V1.zip $(SOURCES) $(DIST) Legion_TD_V10.pro C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\spec_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\qdevice.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\device_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\common\angle.conf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\qconfig.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3drender.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axbase.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axserver.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_charts.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_clucene_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_core.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_core_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_datavisualization.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_datavisualization_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_dbus.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designer.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gui.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_help.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_help_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_location.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_location_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_network.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_network_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_networkauth.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_networkauth_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_nfc.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_opengl.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_positioning.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_purchasing.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_purchasing_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quick.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_script.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_script_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scxml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sensors.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialport.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sql.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_svg.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_testlib.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uitools.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_websockets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_widgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_winextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt_functions.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\win32-g++\qmake.conf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exclusive_builds.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\toolchain.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\default_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\default_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\resolve_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exclusive_builds_post.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\default_post.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\build_pass.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\rtti.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\precompile_header.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\warn_on.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\resources.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\moc.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\opengl.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\uic.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qmake_use.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\file_copies.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\windows.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\testcase_targets.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exceptions.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\yacc.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\lex.prf Legion_TD_V10.pro res.qrc C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\qtmain.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Widgets.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Gui.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Network.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Core.prl   res.qrc C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\data\dummy.cpp game.h tower.h tile.h map.h enemy.h normaltower.h frosttower.h inteltower.h ultitower.h pathfinder.h bullet.h loadscreen.h infopane.h udpsocket.h towerpane.h main.cpp game.cpp tower.cpp tile.cpp map.cpp enemy.cpp normaltower.cpp frosttower.cpp inteltower.cpp ultitower.cpp pathfinder.cpp bullet.cpp loadscreen.cpp infopane.cpp udpsocket.cpp towerpane.cpp     
+	$(ZIP) Legion_TD_V1.zip $(SOURCES) $(DIST) Legion_TD_V10.pro C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\spec_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\qdevice.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\device_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\common\angle.conf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\qconfig.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3drender.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axbase.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axserver.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_charts.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_clucene_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_core.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_core_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_datavisualization.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_datavisualization_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_dbus.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designer.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gui.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_help.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_help_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_location.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_location_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_network.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_network_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_networkauth.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_networkauth_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_nfc.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_opengl.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_positioning.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_purchasing.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_purchasing_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quick.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_script.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_script_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scxml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sensors.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialport.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sql.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_svg.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_testlib.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uitools.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_websockets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_widgets.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_winextras.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xml.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt_functions.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\win32-g++\qmake.conf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exclusive_builds.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\toolchain.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\default_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\default_pre.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\resolve_config.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exclusive_builds_post.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\default_post.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\build_pass.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\resolve_target.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\separate_debug_info.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qml_debug.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\rtti.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\precompile_header.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\warn_on.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qt.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\resources.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\moc.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\opengl.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\uic.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\qmake_use.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\file_copies.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\win32\windows.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\testcase_targets.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\exceptions.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\yacc.prf C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\lex.prf Legion_TD_V10.pro res.qrc C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\qtmain.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Widgets.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Multimedia.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Gui.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Network.prl C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\Qt5Core.prl   res.qrc C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\data\dummy.cpp game.h tower.h tile.h map.h enemy.h normaltower.h frosttower.h inteltower.h ultitower.h pathfinder.h bullet.h loadscreen.h infopane.h udpsocket.h towerpane.h main.cpp game.cpp tower.cpp tile.cpp map.cpp enemy.cpp normaltower.cpp frosttower.cpp inteltower.cpp ultitower.cpp pathfinder.cpp bullet.cpp loadscreen.cpp infopane.cpp udpsocket.cpp towerpane.cpp     
 
 clean: compiler_clean 
 	-$(DEL_FILE) release\main.o release\game.o release\tower.o release\tile.o release\map.o release\enemy.o release\normaltower.o release\frosttower.o release\inteltower.o release\ultitower.o release\pathfinder.o release\bullet.o release\loadscreen.o release\infopane.o release\udpsocket.o release\towerpane.o release\qrc_res.o release\moc_game.o release\moc_tower.o release\moc_enemy.o release\moc_bullet.o release\moc_loadscreen.o release\moc_infopane.o release\moc_udpsocket.o release\moc_towerpane.o
 	-$(DEL_FILE) release\Legion_TD_V1_resource_res.o
 
 distclean: clean 
-	-$(DEL_FILE) .qmake.stash
+	-$(DEL_FILE) "C:\Users\Jacques\Documents\Desktop\TD Game\Legion_TD_V10\release\Legion_TD_V1.exe.debug" .qmake.stash
 	-$(DEL_FILE) $(DESTDIR_TARGET)
 	-$(DEL_FILE) Makefile.Release
 
@@ -172,14 +173,15 @@ compiler_rcc_clean:
 release/qrc_res.cpp: res.qrc \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/rcc.exe \
 		icon.ico \
-		resources/enemy1.png \
 		resources/gameOver.png \
 		resources/ultiArrow.png \
-		resources/frost.png \
 		resources/frostArrow.png \
-		resources/ulti.png \
+		resources/frost.png \
 		resources/intelArrow.png \
+		resources/ulti.png \
 		resources/intel.png \
+		resources/gameBackground.jpg \
+		resources/flameEnemy.png \
 		resources/normal.png \
 		resources/fireArrow.png \
 		resources/tiles.png \
@@ -191,7 +193,7 @@ compiler_moc_predefs_make_all: release/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) release\moc_predefs.h
 release/moc_predefs.h: C:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/features/data/dummy.cpp
-	g++ -pipe -fno-keep-inline-dllexport -O2 -std=gnu++11 -frtti -Wall -Wextra -dM -E -o release\moc_predefs.h C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\data\dummy.cpp
+	g++ -pipe -fno-keep-inline-dllexport -O2 -g -std=gnu++11 -frtti -Wall -Wextra -dM -E -o release\moc_predefs.h C:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\features\data\dummy.cpp
 
 compiler_moc_header_make_all: release/moc_game.cpp release/moc_tower.cpp release/moc_enemy.cpp release/moc_bullet.cpp release/moc_loadscreen.cpp release/moc_infopane.cpp release/moc_udpsocket.cpp release/moc_towerpane.cpp
 compiler_moc_header_clean:
@@ -328,6 +330,10 @@ release/moc_game.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMainWindow
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -367,7 +373,7 @@ release/moc_game.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMainWindow
 		game.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward game.h -o release\moc_game.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward game.h -o release\moc_game.cpp
 
 release/moc_tower.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -506,7 +512,7 @@ release/moc_tower.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsP
 		tower.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward tower.h -o release\moc_tower.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward tower.h -o release\moc_tower.cpp
 
 release/moc_enemy.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -643,7 +649,7 @@ release/moc_enemy.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsP
 		enemy.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward enemy.h -o release\moc_enemy.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward enemy.h -o release\moc_enemy.cpp
 
 release/moc_bullet.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -784,7 +790,7 @@ release/moc_bullet.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphics
 		bullet.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward bullet.h -o release\moc_bullet.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward bullet.h -o release\moc_bullet.cpp
 
 release/moc_loadscreen.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMainWindow \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qmainwindow.h \
@@ -919,6 +925,10 @@ release/moc_loadscreen.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMain
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -958,7 +968,7 @@ release/moc_loadscreen.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMain
 		loadscreen.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward loadscreen.h -o release\moc_loadscreen.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward loadscreen.h -o release\moc_loadscreen.cpp
 
 release/moc_infopane.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QWidget \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qwidget.h \
@@ -1076,7 +1086,7 @@ release/moc_infopane.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QWidget
 		infopane.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward infopane.h -o release\moc_infopane.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward infopane.h -o release\moc_infopane.cpp
 
 release/moc_udpsocket.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QObject \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qobject.h \
@@ -1150,7 +1160,7 @@ release/moc_udpsocket.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QObject \
 		udpsocket.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward udpsocket.h -o release\moc_udpsocket.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward udpsocket.h -o release\moc_udpsocket.cpp
 
 release/moc_towerpane.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QObject \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qobject.h \
@@ -1306,7 +1316,7 @@ release/moc_towerpane.cpp: C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QObject \
 		towerpane.h \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward towerpane.h -o release\moc_towerpane.cpp
+	C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\moc.exe $(DEFINES) --include release/moc_predefs.h -IC:/Qt/Qt5.8.0/5.8/mingw53_32/mkspecs/win32-g++ -I"C:/Users/Jacques/Documents/Desktop/TD Game/Legion_TD_V10" -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtNetwork -IC:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.8.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward towerpane.h -o release\moc_towerpane.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1465,6 +1475,10 @@ release/main.o: main.cpp C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QApplica
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -1636,6 +1650,10 @@ release/game.o: game.cpp game.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -1834,6 +1852,10 @@ release/tower.o: tower.cpp tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		normaltower.h \
 		frosttower.h \
 		inteltower.h \
@@ -2096,6 +2118,10 @@ release/map.o: map.cpp C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QDebug \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsItem \
@@ -2277,6 +2303,10 @@ release/enemy.o: enemy.cpp enemy.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsEllipseItem \
 		normaltower.h \
@@ -2451,6 +2481,10 @@ release/normaltower.o: normaltower.cpp normaltower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		frosttower.h \
 		inteltower.h \
 		ultitower.h \
@@ -2622,6 +2656,10 @@ release/frosttower.o: frosttower.cpp frosttower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		normaltower.h \
 		inteltower.h \
 		ultitower.h \
@@ -2793,6 +2831,10 @@ release/inteltower.o: inteltower.cpp inteltower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		normaltower.h \
 		frosttower.h \
 		ultitower.h \
@@ -2964,6 +3006,10 @@ release/ultitower.o: ultitower.cpp ultitower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		normaltower.h \
 		frosttower.h \
 		inteltower.h \
@@ -3263,6 +3309,10 @@ release/bullet.o: bullet.cpp bullet.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		normaltower.h \
 		frosttower.h \
 		inteltower.h \
@@ -3416,6 +3466,10 @@ release/loadscreen.o: loadscreen.cpp loadscreen.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -3610,6 +3664,10 @@ release/infopane.o: infopane.cpp infopane.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -3786,6 +3844,10 @@ release/udpsocket.o: udpsocket.cpp udpsocket.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTimer \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qtimer.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qbasictimer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		tower.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qgraphicsitem.h \
@@ -3975,6 +4037,10 @@ release/towerpane.o: towerpane.cpp towerpane.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qmainwindow.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qtabwidget.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/QMouseEvent \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/QSound \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qsound.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimediaglobal.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtMultimedia/qtmultimedia-config.h \
 		pathfinder.h \
 		infopane.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QPushButton \

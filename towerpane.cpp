@@ -62,15 +62,18 @@ void TowerPane::setTowerPaneEnabled(bool b)
 
 void TowerPane::setAffordableTowers(int gold)
 {
-    setTowerPaneEnabled(false);
-    if(gold >= normalPrice)
-        normalTowerBut->setEnabled(true);
-    if(gold >= frostPrice)
-        frostTowerBut->setEnabled(true);
-    if(gold >= intelPrice)
-        intelTowerBut->setEnabled(true);
-    if(gold >= ultiPrice)
-        ultiTowerBut->setEnabled(true);
+    if (!game->waveActive)
+    {
+        setTowerPaneEnabled(false);
+        if(gold >= normalPrice)
+            normalTowerBut->setEnabled(true);
+        if(gold >= frostPrice)
+            frostTowerBut->setEnabled(true);
+        if(gold >= intelPrice)
+            intelTowerBut->setEnabled(true);
+        if(gold >= ultiPrice)
+            ultiTowerBut->setEnabled(true);
+    }
 }
 
 void TowerPane::initLabels()

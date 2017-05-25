@@ -18,7 +18,7 @@ public:
     int getLives() const;
     void setLives(int value);
 
-    QPushButton *spawnEnemy, *nextWave;
+    QPushButton *spawnEnemy, *nextWave, *quitGame;
 
     int getIncome() const;
     void setIncome(int value);
@@ -32,7 +32,7 @@ public:
 private:
     int wave, lives;
     int income = 3;
-    int gold = 50;
+    int gold = 2000;
     QLabel *waveText, *livesText, *incomeText,
             *goldText, *nextWaveTimeText;
     QLabel *waveVal, *livesVal, *incomeVal,

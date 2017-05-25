@@ -45,7 +45,6 @@ void Tower::mousePressEvent(QGraphicsSceneMouseEvent *e)
             {
                 d1 = d2;
                 closestTile = map->getTile(x,y);
-                setRange(800);
             }
         }
     }
@@ -87,14 +86,6 @@ void Tower::setBulletDamage(int value)
 void Tower::setRange(qreal r)
 {
     range = r;
-    //    qreal elipseW = range;
-    //    qreal elipseH = range/2;
-    //    fireArea = new QGraphicsEllipseItem(0,0,elipseW,elipseH,this); //parent****
-//    fireArea->setPen(QPen(Qt::SolidPattern,10,Qt::DashLine));
-//    fireArea->setPos(-elipseW/2,-elipseH/2);
-
-
-    //Activate range
     connect(game->fireTimer,SIGNAL(timeout()),this,SLOT(setTarget()));
 }
 
@@ -127,7 +118,6 @@ void Tower::setTarget()
             }
         }
     }
-
 }
 
 void Tower::fire()

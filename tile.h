@@ -9,6 +9,7 @@
 enum TileType
 {
     GroundTile,
+    PathTile,
     TowerTile
 };
 
@@ -25,6 +26,7 @@ public:
     int getTileX();
     int getTileY();
     void setTileType(TileType t);
+    void setTilePixmap();
 
     int f,g,h;
     Tile *parent = 0;
@@ -32,11 +34,11 @@ public:
 
 private:
     TileType type;
-    static int const tilePixmapW = 64;
-    static int const tilePixmapH = 32;
-    static int const tileScale = 2;
-    int tileW = 64;
-    int tileH = 32;
+    static int const tilePixmapW = 100; //64
+    static int const tilePixmapH = 166; //32
+    qreal const tileScale = 1.8;
+    int tileW = 100;
+    int tileH = 60;
     int tileX;
     int tileY;
 };

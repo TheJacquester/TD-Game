@@ -15,6 +15,7 @@ IntelTower::IntelTower()
     setZValue(zMax);
 
     //Bullet
-    setBulletDamage(10);
+    setBulletDamage(30);
     bulletPixPath = ":/img/resources/intelArrow.png";
+    setRange(1000);
 }

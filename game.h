@@ -12,6 +12,7 @@
 #include <QList>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QSound>
 
 #include "tower.h"
 #include "normaltower.h"
@@ -61,6 +62,8 @@ public:
 
 //Enemy
     void spawnEnemy();
+    void initEnemyPixmap();
+    QList <QPixmap> enemySprites;
     QList <Enemy*> enemies;
     int maxEnemies = 10;
     int spawnCount = 0;
@@ -73,12 +76,12 @@ public:
     QString intelTowerPath = ":/img/resources/intel.png";
     QString ultiTowerPath = ":/img/resources/ulti.png";
     //Enemies
-    QString enemyPixmapPath = ":/img/resources/enemy1.png";
+    QString enemyPixmapPath = ":/img/resources/superGreen.png";
     //Tile
     QString tilePixmapPath = ":/img/resources/tiles.png";
 
 //Scene Background
-//    QString backgroundPath = ":/img/resources/background.JPG";
+    QString backgroundPath = ":/img/resources/gameBackground.jpg";
 //Networking
     UdpSocket *host;
     void initHost();
@@ -89,10 +92,15 @@ public:
             *waveTimer, *spawnTimer, *secTimer;
     int gameSpeed = 50; //Game step speed (msec)
     int waveTime = 20000;
-    int spawnTime = 200;
+    int spawnTime = 500;
     int startGamePollTime = 500;
     int getLives() const;
     void setLives(int value);
+
+//waves
+    bool waveActive = false; //True if ememies on map
+    void waveStart(); //Disable buttons for next wave
+    void waveStop(); //Enable buttons after wave
     int getWave() const;
     void setWave(int value);
     bool firstWave = true; //first wave should take longer to spawn
@@ -110,6 +118,8 @@ private slots:
     void nextWave();
     void spawnWaveEnemies(); //Check if max enemies reached and spawn
     void ckeckStartGame(); //Check if game is ready to be started
+
+public slots:
     void endGame(); //Calls resetGame() from main
 };
 

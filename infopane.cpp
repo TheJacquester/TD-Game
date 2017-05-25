@@ -77,6 +77,10 @@ InfoPane::InfoPane(QWidget *parent) : QWidget(parent)
     gridLayout->addWidget(nextWave,i,0,1,0);
     connect(nextWave,SIGNAL(clicked(bool)),this,SLOT(infoNextWaveClicked()));
 
+    ++i;
+    quitGame = new QPushButton("Quit Game",this);
+    gridLayout->addWidget(quitGame,i,0,1,0);
+    connect(quitGame,SIGNAL(clicked(bool)),game,SLOT(endGame()));
 }
 
 int InfoPane::getWave() const
@@ -147,7 +151,6 @@ void InfoPane::infoNextWaveClicked()
 //Force timeout to start next wave
     game->waveTimer->stop();
     QMetaObject::invokeMethod(game->waveTimer, "timeout");
-    game->waveTimer->start();
 }
 
 void InfoPane::infoSpawnEnemyClicked()

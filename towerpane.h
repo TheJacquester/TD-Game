@@ -40,7 +40,7 @@ private:
     int frostPrice = 40;
     int intelPrice = 80;
     int ultiPrice = 150;
-    const qreal towerScaleFactor = 0.5; //Tower Scale Factor on Button
+    const qreal towerScaleFactor = 1; //Tower Scale Factor on Button
 
 signals:
 

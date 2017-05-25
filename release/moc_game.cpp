@@ -61,7 +61,7 @@ static const uint qt_meta_data_Game[] = {
        1,    0,   34,    2, 0x08 /* Private */,
        3,    0,   35,    2, 0x08 /* Private */,
        4,    0,   36,    2, 0x08 /* Private */,
-       5,    0,   37,    2, 0x08 /* Private */,
+       5,    0,   37,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
