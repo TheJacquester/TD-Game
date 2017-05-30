@@ -24,6 +24,7 @@ public:
 private:
 //Labels And Buttons
     QToolButton *normalTowerBut, *frostTowerBut, *intelTowerBut, *ultiTowerBut;
+    QToolButton *zoomInBut, *zoomOutBut;
     QLabel *lblNormal, *lblFrost, *lblIntel, *lblUlti;
     void initLabels();
 //Towers

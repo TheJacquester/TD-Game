@@ -46,6 +46,7 @@ protected:
     QPointF targetPoint;
 
     void setRange(qreal r);
+    bool placable(); //checks if tower will block path
 
     QString bulletPixPath;
 

@@ -16,7 +16,6 @@ class PathFinder
 {
 public:
     PathFinder(Map *m,QGraphicsScene *s);
-//    QList <QPointF> calcPath();
     QList <Tile*> calcPath();
 private:
     int mapW, mapH;
@@ -29,7 +28,7 @@ private:
     int calcH(Tile *a, Tile *b);
     void calcNeighbours(Tile *n);
     Tile *smallestF();
-    void printMap();
+    void printMap(); //Print map with Path tiles
 };
 
 #endif // PATHFINDER_H

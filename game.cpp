@@ -45,7 +45,9 @@ void Game::loadInterface()
 
     mainWidget->setLayout(outerLayout);
     view->show();
-    view->scale(0.5,0.5);
+    view->scale(0.3,0.3);
+
+    initZoom();
 
 //Tower Buttons and Options
     initInfo();
@@ -154,6 +156,25 @@ void Game::initEnemyPixmap()
     int w = 25, h = 25;
     for(int i = 0; i <= 10; ++i )
         enemySprites.append(p.copy(i*w,0,w,h));
+}
+
+void Game::initZoom()
+{
+    //zoom Buttons
+        const QSize zoomButSize = QSize(30,30);
+        zoomInBut = new QToolButton(this);
+        zoomInBut->setMinimumSize(zoomButSize);
+        zoomInBut->setMaximumSize(zoomButSize);
+        zoomInBut->setText("+");
+        zoomInBut->move(20,20);
+        zoomInBut->show();
+
+        zoomOutBut = new QToolButton(this);
+        zoomOutBut->setMinimumSize(zoomButSize);
+        zoomOutBut->setMaximumSize(zoomButSize);
+        zoomOutBut->setText("-");
+        zoomOutBut->move(25+zoomOutBut->height(),20);
+        zoomOutBut->show();
 }
 
 void Game::initHost()

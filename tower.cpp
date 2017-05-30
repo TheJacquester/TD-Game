@@ -51,10 +51,18 @@ void Tower::mousePressEvent(QGraphicsSceneMouseEvent *e)
     if (closestTile->getTileType() == GroundTile)
     {
         closestTile->setTileType(TowerTile);
-        this->setPos(closestTile->scenePos());
-        this->setZValue(closestTile->zValue()+1);
+        if (placable())
+        {
+            this->setPos(closestTile->scenePos());
+            this->setZValue(closestTile->zValue()+1);
             //+1 To let enemies walk behind towers, but in front of tiles
-        ungrabMouse();
+            ungrabMouse();
+        }
+        else
+        {
+            closestTile->setTileType(GroundTile);
+            game->pathFinder->calcPath();
+        }
     }
 }
 
@@ -87,6 +95,16 @@ void Tower::setRange(qreal r)
 {
     range = r;
     connect(game->fireTimer,SIGNAL(timeout()),this,SLOT(setTarget()));
+}
+
+bool Tower::placable()
+{
+    game->pathFinder = new PathFinder(map,scene); //Possible place for stack overflow
+    QList <Tile*> path = game->pathFinder->calcPath();
+    if (path.size()<=1)
+        return false;
+    else
+        return true;
 }
 
 QString Tower::getBulletPixPath() const

@@ -8,27 +8,29 @@ TowerPane::TowerPane(QWidget *parent) : QWidget(parent)
 //tower labels
     initLabels();
 
+
+
 //tower buttons
-    const QSize towerButSize = QSize(100,150);
+    const QSize towerButSize = QSize(150,100);
     normalTowerBut = new QToolButton(this);
     normalTowerBut->setMinimumSize(towerButSize);
     normalTowerBut->setIcon(QIcon(game->normalTowerPath));
-    normalTowerBut->setIconSize(QSize(400,300));
+    normalTowerBut->setIconSize(towerButSize);
 
     frostTowerBut = new QToolButton(this);
     frostTowerBut->setMinimumSize(towerButSize);
     frostTowerBut->setIcon(QIcon(game->frostTowerPath));
-    frostTowerBut->setIconSize(QSize(400,300));
+    frostTowerBut->setIconSize(towerButSize);
 
     intelTowerBut = new QToolButton(this);
     intelTowerBut->setMinimumSize(towerButSize);
     intelTowerBut->setIcon(QIcon(game->intelTowerPath));
-    intelTowerBut->setIconSize(QSize(400,300));
+    intelTowerBut->setIconSize(towerButSize);
 
     ultiTowerBut = new QToolButton(this);
     ultiTowerBut->setMinimumSize(towerButSize);
     ultiTowerBut->setIcon(QIcon(game->ultiTowerPath));
-    ultiTowerBut->setIconSize(QSize(400,300));
+    ultiTowerBut->setIconSize(towerButSize);
 
 //grid
     towerButLayout = new QGridLayout;

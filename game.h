@@ -82,6 +82,9 @@ public:
 
 //Scene Background
     QString backgroundPath = ":/img/resources/gameBackground.jpg";
+    void initZoom();
+    QToolButton *zoomInBut, *zoomOutBut;
+
 //Networking
     UdpSocket *host;
     void initHost();

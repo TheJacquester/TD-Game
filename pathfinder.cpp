@@ -114,7 +114,7 @@ void PathFinder::printMap()
 
     for (int x = 0; x < mapW; ++x)
     {
-        for(int y = 0; y < mapH; ++y) //Bou van agter af vorentoe
+        for(int y = 0; y < mapH; ++y) //Build from back to front
         {
             if (map->getTile(x,y)->path)
                 map->getTile(x,y)->setPixmap(pathPix);
