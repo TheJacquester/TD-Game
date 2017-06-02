@@ -8,6 +8,9 @@ UltiTower::UltiTower()
 {
     map = game->map;
     scene = game->scene;
+
+    //Pixmap
+    upgradePix = QPixmap(":/img/resources/ultiUpgrade.png");
     setPixmap(QPixmap(game->ultiTowerPath));
     W = pixmap().width();
     H = pixmap().height();
@@ -15,7 +18,12 @@ UltiTower::UltiTower()
     setZValue(zMax);
 
     //Bullet
-    setBulletDamage(40);
+    setBulletDamage(100);
     bulletPixPath = ":/img/resources/ultiArrow.png";
     setRange(1000);
+
+    //Price
+    buyPrice = game->info->ultiPrice;
+    sellPrice = buyPrice / 2;
+    upgradePrice = round(buyPrice * 2.5);
 }

@@ -77,7 +77,8 @@ void PathFinder::calcNeighbours(Tile *n)
                 !openList.contains(currentTile) &&    /*Neighbour Tile nie in openList && closedList nie?*/
                 !closedList.contains(currentTile) &&
                 (currentTile->getTileType() == GroundTile) &&  /*Neighbour Tile bekostigbaar?*/
-                ((dx*dx) || (dy*dy))) /*nie op current Tile?*/
+                ((dx*dx) || (dy*dy)) &&/*nie op current Tile?*/
+                (dx*dx) != (dy*dy))
             {
                 currentTile->parent = n;
                 if ((dx*dx)&&(dy*dy)) //^2 om nie te toets vir negatief ook nie

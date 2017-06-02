@@ -12,7 +12,28 @@ Enemy::Enemy()
     path = game->path;
 
 //Pixmap
-    setPixmap(game->enemySprites.at(0));//QPixmap(game->enemyPixmapPath));
+    if (game->getWave() >= 2) //start spawing large enemies
+    {
+        if(game->getWave() >= 3) //start spawing only large enemies
+        {
+            sprites = game->largeEnemySprites;
+            game->healtMax += 1000;
+        }
+        else {
+            if(qrand() % 3 == 0) //random chance
+            {
+                sprites = game->largeEnemySprites;
+                healthMax = 1500;
+                game->info->setIncome(30);
+            }
+            else
+                sprites = game->smallEnemySprites;
+        }
+    }
+    else
+        sprites = game->smallEnemySprites;
+
+    setPixmap(sprites.at(0));
     setScale(10);
     W = pixmap().width();
     H = pixmap().height();
@@ -35,6 +56,8 @@ Enemy::Enemy()
     healthBar->setZValue(this->zValue());
     healthBar->show();
 
+//Sound
+    coinSound = new QSound(":/sound/resources/coinSound.wav");
 }
 
 Enemy::~Enemy()
@@ -42,6 +65,8 @@ Enemy::~Enemy()
     game->enemies.removeOne(this);
     if (game->enemies.isEmpty())
         game->waveStop();
+    if (health <= 0)
+        coinSound->play();
 }
 
 void Enemy::takeDamage(int damage)
@@ -72,7 +97,7 @@ void Enemy::hop()
         spriteCount++;
     else
         spriteCount = 0;
-    setPixmap(game->enemySprites.at(spriteCount));
+    setPixmap(sprites.at(spriteCount));
     if (hopSkipCount == hopSkipMax)
     {
         hopSkipCount = 0;

@@ -25,7 +25,6 @@ void Game::loadInterface()
 
 //Layout
     outerLayout = new QGridLayout(this);
-    initTowerBut();
 
 //Graphics Scene and View
     scene = new QGraphicsScene(this);
@@ -36,6 +35,8 @@ void Game::loadInterface()
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    view->setDragMode(QGraphicsView::ScrollHandDrag);
 
 //Graphics View and Column properties
     outerLayout->addWidget(view,0,0);
@@ -51,6 +52,7 @@ void Game::loadInterface()
 
 //Tower Buttons and Options
     initInfo();
+    initTowerBut();
 
 //Map
     map = new Map(scene);
@@ -60,6 +62,7 @@ void Game::loadInterface()
 
 //Enemies
     initEnemyPixmap();
+
 }
 
 void Game::startGame()
@@ -139,6 +142,12 @@ void Game::decreaseLives()
     info->setLives(lives);
 }
 
+void Game::setMapSize(int w, int h)
+{
+    mapW = w;
+    mapH = h;
+}
+
 void Game::spawnEnemy()
 {
     pathFinder = new PathFinder(map,scene);
@@ -152,10 +161,16 @@ void Game::spawnEnemy()
 
 void Game::initEnemyPixmap()
 {
-    QPixmap p = QPixmap(enemyPixmapPath);
+    QPixmap p = QPixmap(largeEnemyPixmapPath);
     int w = 25, h = 25;
     for(int i = 0; i <= 10; ++i )
-        enemySprites.append(p.copy(i*w,0,w,h));
+        largeEnemySprites.append(p.copy(i*w,0,w,h));
+
+    p = QPixmap(smallEnemyPixmapPath);
+    w = 13;
+    h = 25;
+    for(int i = 0; i <= 10; ++i )
+        smallEnemySprites.append(p.copy(i*w,0,w,h));
 }
 
 void Game::initZoom()
@@ -168,6 +183,7 @@ void Game::initZoom()
         zoomInBut->setText("+");
         zoomInBut->move(20,20);
         zoomInBut->show();
+        connect(zoomInBut,SIGNAL(clicked(bool)),this,SLOT(zoomIn()));
 
         zoomOutBut = new QToolButton(this);
         zoomOutBut->setMinimumSize(zoomButSize);
@@ -175,6 +191,8 @@ void Game::initZoom()
         zoomOutBut->setText("-");
         zoomOutBut->move(25+zoomOutBut->height(),20);
         zoomOutBut->show();
+        connect(zoomOutBut,SIGNAL(clicked(bool)),this,SLOT(zoomOut()));
+
 }
 
 void Game::initHost()
@@ -304,4 +322,14 @@ void Game::ckeckStartGame()
         startGame();
         startGameTimer->deleteLater();
     }
+}
+
+void Game::zoomIn()
+{
+    view->scale(1.1,1.1);
+}
+
+void Game::zoomOut()
+{
+    view->scale(0.9,0.9);
 }

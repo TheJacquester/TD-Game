@@ -5,10 +5,15 @@ extern Game *game;
 
 TowerPane::TowerPane(QWidget *parent) : QWidget(parent)
 {
+
+//Tower costs
+    normalPrice = game->info->normalPrice;
+    frostPrice = game->info->frostPrice;
+    intelPrice = game->info->intelPrice;
+    ultiPrice = game->info->ultiPrice;
+
 //tower labels
     initLabels();
-
-
 
 //tower buttons
     const QSize towerButSize = QSize(150,100);

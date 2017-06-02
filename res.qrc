@@ -3,7 +3,6 @@
         <file>resources/arrow.png</file>
         <file>resources/fireArrow.png</file>
         <file>icon.ico</file>
-        <file>resources/background.jpg</file>
         <file>resources/gameOver.png</file>
         <file>resources/frostArrow.png</file>
         <file>resources/intelArrow.png</file>
@@ -17,5 +16,14 @@
         <file>resources/flameEnemy.png</file>
         <file>resources/smoke.png</file>
         <file>resources/superGreen.png</file>
+        <file>resources/frostUpgrade.png</file>
+        <file>resources/intelUpgrade.png</file>
+        <file>resources/normalUpgrade.png</file>
+        <file>resources/ultiUpgrade.png</file>
+        <file>resources/loadBackground.png</file>
+        <file>resources/smallGreen.png</file>
+    </qresource>
+    <qresource prefix="/sound">
+        <file>resources/coinSound.wav</file>
     </qresource>
 </RCC>

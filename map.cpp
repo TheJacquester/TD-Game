@@ -8,9 +8,10 @@ extern Game *game;
 
 Map::Map(QGraphicsScene *s)
 {
+    mapW = game->mapW;
+    mapH = game->mapH;
     int z = 0;
     scene = s;
-
 
     for (int i = mapW - 1; i >= 0; --i)
     {

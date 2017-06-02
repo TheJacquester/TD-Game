@@ -68,7 +68,7 @@ InfoPane::InfoPane(QWidget *parent) : QWidget(parent)
 
 //Buttons
     ++i;
-    spawnEnemy = new QPushButton(QIcon(game->enemyPixmapPath),"Spawn Enemy",this);
+    spawnEnemy = new QPushButton(QIcon(game->smallEnemyPixmapPath),"Spawn Enemy",this);
     gridLayout->addWidget(spawnEnemy,i,0,1,0);
     connect(spawnEnemy,SIGNAL(clicked(bool)),this,SLOT(infoSpawnEnemyClicked()));
 

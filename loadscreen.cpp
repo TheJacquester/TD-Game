@@ -14,7 +14,7 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
 {
     //Background
     background = new QLabel(this);
-    background->setPixmap(QPixmap(":/img/resources/background.jpg"));
+    background->setPixmap(QPixmap(":/img/resources/loadBackground.png"));
     background->show();
     W = background->pixmap()->width();
     H = background->pixmap()->height();
@@ -58,13 +58,65 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
     connect(joinBut,SIGNAL(clicked(bool)),this,SLOT(joinBut_clicked()));
 
     QSpacerItem *spacer = new QSpacerItem(W,H - 50);
-    grid->addItem(spacer,2,0,1,0);
+    grid->addItem(spacer,3,0,1,0);
+
+    //Group Box
+    settingsGroupBox = new QGroupBox("Game Settings",this);
+    settingsGroupBox->setPalette(QPalette(Qt::black));
+    grid->addWidget(settingsGroupBox,2,0,1,0,Qt::AlignCenter);
+    groupBoxLayout = new QGridLayout(this);
+    settingsGroupBox->setLayout(groupBoxLayout);
+
+
+    //Spin Boxes and Labels
+    QLabel *mapSizeLabel = new QLabel("Map Size:",this);
+    groupBoxLayout->addWidget(mapSizeLabel,0,0);
+
+    wSpinBox = new QSpinBox(this);
+    wSpinBox->setPalette(QPalette(Qt::black));
+    wSpinBox->setValue(10);
+    wSpinBox->setMinimum(5);
+    wSpinBox->setMaximum(50);
+    wSpinBox->setMinimumWidth(50);
+    groupBoxLayout->addWidget(wSpinBox,1,0);
+
+    QLabel *xLabel = new QLabel("x",this);
+    groupBoxLayout->addWidget(xLabel,1,1);
+
+    hSpinBox = new QSpinBox(this);
+    hSpinBox->setPalette(QPalette(Qt::black));
+    hSpinBox->setValue(10);
+    hSpinBox->setMinimum(5);
+    hSpinBox->setMaximum(50);
+    hSpinBox->setMinimumWidth(50);
+    groupBoxLayout->addWidget(hSpinBox,1,2);
+
+    //Loading Sprite
+    sprite = new QLabel(this);
+
+    QPixmap p = QPixmap(":/img/resources/superGreen.png");
+    int w = 25, h = 25;
+    for(int i = 0; i <= 10; ++i )
+    {
+        sprites.append(p.copy(i*w,0,w,h));
+    }
+
+    sprite->setPixmap(QPixmap(sprites.first()));
+    sprite->move(-this->width()*3,this->height()/2);
+    sprite->show();
+    sprite->setMinimumSize(150,150);
+
+    timer = new QTimer(this);
+    timer->setInterval(100);
+    connect(timer,SIGNAL(timeout()),this,SLOT(nextPixmap()));
+    timer->start();
 }
 
 void LoadScreen::singlePlayerBut_clicked()
 {
     //New Game
     game = new Game;
+    game->setMapSize(wSpinBox->value(),hSpinBox->value());
     game->singlePlayerMode();
     this->deleteLater();
 }
@@ -96,6 +148,19 @@ void LoadScreen::joinBut_clicked()
         this->deleteLater();
     }
 
+}
+
+void LoadScreen::nextPixmap()
+{
+    if(spriteCount <= 9)
+        spriteCount++;
+    else
+        spriteCount = 0;
+    sprite->setPixmap(sprites.at(spriteCount).scaled(sprite->minimumSize()));
+    if(sprite->x() >= this->width())
+        sprite->move(-this->width()*3,sprite->y());
+    else
+        sprite->move(sprite->x()+20,sprite->y());
 }
 
 

@@ -14,9 +14,9 @@ public:
     int getMapW();
     int getMapH();
 private:
-    static const int mapW = 18;
-    static const int mapH = 18;
-    Tile *map[mapW][mapH];
+    int mapW = 18;
+    int mapH = 18;
+    Tile *map[100][100];
     QGraphicsScene *scene;
 
     int verticalTileOffset(int x, int y);

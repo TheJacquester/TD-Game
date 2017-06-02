@@ -56,6 +56,9 @@ public:
     TowerPane *towerPane;
 
 //Map and path finding
+    void setMapSize(int w, int h);
+    int mapW = 15;
+    int mapH = 15;
     Map *map;
     PathFinder *pathFinder;
     QList <Tile*> path;
@@ -63,7 +66,7 @@ public:
 //Enemy
     void spawnEnemy();
     void initEnemyPixmap();
-    QList <QPixmap> enemySprites;
+    QList <QPixmap> largeEnemySprites, smallEnemySprites;
     QList <Enemy*> enemies;
     int maxEnemies = 10;
     int spawnCount = 0;
@@ -76,7 +79,8 @@ public:
     QString intelTowerPath = ":/img/resources/intel.png";
     QString ultiTowerPath = ":/img/resources/ulti.png";
     //Enemies
-    QString enemyPixmapPath = ":/img/resources/superGreen.png";
+    QString largeEnemyPixmapPath = ":/img/resources/superGreen.png";
+    QString smallEnemyPixmapPath = ":/img/resources/smallGreen.png";
     //Tile
     QString tilePixmapPath = ":/img/resources/tiles.png";
 
@@ -115,13 +119,14 @@ private:
 
 //game info
     int wave = 1;
-    int lives = 50;
+    int lives = 1;
 
 private slots:
     void nextWave();
     void spawnWaveEnemies(); //Check if max enemies reached and spawn
     void ckeckStartGame(); //Check if game is ready to be started
-
+    void zoomIn();
+    void zoomOut();
 public slots:
     void endGame(); //Calls resetGame() from main
 };

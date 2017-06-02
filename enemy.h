@@ -13,6 +13,7 @@
 #include <QTimeLine>
 #include <QTimer>
 #include <QGraphicsRectItem>
+#include <QSound>
 
 #include "map.h"
 class Enemy: public QObject, public QGraphicsPixmapItem
@@ -33,8 +34,12 @@ private:
     int health = 0;
     int gold = 2;
 
+//Sound
+    QSound *coinSound;
+
 //visual
     int spriteCount = 0;
+    QList <QPixmap> sprites;
     QGraphicsRectItem *healthBar;
     qreal healthBarMax, healthBarHeight = 5;
     void updateHealtBar();

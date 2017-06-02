@@ -8,6 +8,9 @@ IntelTower::IntelTower()
 {
     map = game->map;
     scene = game->scene;
+
+    //Pixmap
+    upgradePix = QPixmap(":/img/resources/intelUpgrade.png");
     setPixmap(QPixmap(game->intelTowerPath));
     W = pixmap().width();
     H = pixmap().height();
@@ -15,7 +18,13 @@ IntelTower::IntelTower()
     setZValue(zMax);
 
     //Bullet
-    setBulletDamage(30);
+    setBulletDamage(50);
     bulletPixPath = ":/img/resources/intelArrow.png";
     setRange(1000);
+
+    //Price
+    buyPrice = game->info->intelPrice;
+    sellPrice = buyPrice / 2;
+    upgradePrice = round(buyPrice * 2.5);
 }
+

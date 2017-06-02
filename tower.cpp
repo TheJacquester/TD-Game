@@ -11,57 +11,78 @@ Tower::Tower()
 
 void Tower::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
 {
-    qreal d1 = dist(e->scenePos(),map->getTile(0,0)->scenePos());
-    Tile *closestTile = new Tile;
-    int mapW = map->getMapW();
-    int mapH = map->getMapH();
-    for(int x = 0;x < mapW; ++x)
+    if (!placed)
     {
-        for(int y = 0;y < mapH; ++y)
+        qreal d1 = dist(e->scenePos(),map->getTile(0,0)->scenePos());
+        Tile *closestTile = new Tile;
+        int mapW = map->getMapW();
+        int mapH = map->getMapH();
+        for(int x = 0;x < mapW; ++x)
         {
-            qreal d2 = dist(e->scenePos(),map->getTile(x,y)->scenePos());
-            if(d2 <= d1)
+            for(int y = 0;y < mapH; ++y)
             {
-                d1 = d2;
-                closestTile = map->getTile(x,y);
+                qreal d2 = dist(e->scenePos(),map->getTile(x,y)->scenePos());
+                if(d2 <= d1)
+                {
+                    d1 = d2;
+                    closestTile = map->getTile(x,y);
+                }
             }
         }
+        this->setPos(closestTile->scenePos());
     }
-    this->setPos(closestTile->scenePos());
 }
 
 void Tower::mousePressEvent(QGraphicsSceneMouseEvent *e)
 {
-    qreal d1 = dist(e->scenePos(),map->getTile(0,0)->scenePos());
-    Tile *closestTile = new Tile;
-    int mapW = map->getMapW();
-    int mapH = map->getMapH();
-    for(int x = 0;x < mapW; ++x)
+    if(e->button() == Qt::MiddleButton && !upgraded && game->info->getGold() >= upgradePrice)
     {
-        for(int y = 0;y < mapH; ++y)
+        setPixmap(upgradePix);
+        game->info->decreaseGold(upgradePrice);
+        bulletDamage *= 2;
+        upgraded = true;
+    }
+    if(e->button() == Qt::RightButton) //Delete Tower
+    {
+        currentTile->setTileType(GroundTile);
+        game->info->increaseGold(sellPrice);
+        deleteLater();
+    }
+    if (!placed)
+    {
+        qreal d1 = dist(e->scenePos(),map->getTile(0,0)->scenePos());
+        Tile *closestTile = new Tile;
+        int mapW = map->getMapW();
+        int mapH = map->getMapH();
+        for(int x = 0;x < mapW; ++x)
         {
-            qreal d2 = dist(e->scenePos(),map->getTile(x,y)->scenePos());
-            if(d2 <= d1)
+            for(int y = 0;y < mapH; ++y)
             {
-                d1 = d2;
-                closestTile = map->getTile(x,y);
+                qreal d2 = dist(e->scenePos(),map->getTile(x,y)->scenePos());
+                if(d2 <= d1)
+                {
+                    d1 = d2;
+                    closestTile = map->getTile(x,y);
+                    currentTile = closestTile;
+                }
             }
         }
-    }
-    if (closestTile->getTileType() == GroundTile)
-    {
-        closestTile->setTileType(TowerTile);
-        if (placable())
+        if (closestTile->getTileType() == GroundTile)
         {
-            this->setPos(closestTile->scenePos());
-            this->setZValue(closestTile->zValue()+1);
-            //+1 To let enemies walk behind towers, but in front of tiles
-            ungrabMouse();
-        }
-        else
-        {
-            closestTile->setTileType(GroundTile);
-            game->pathFinder->calcPath();
+            closestTile->setTileType(TowerTile);
+            if (placable())
+            {
+                this->setPos(closestTile->scenePos());
+                this->setZValue(closestTile->zValue()+1);
+                //+1 To let enemies walk behind towers, but in front of tiles
+                placed = true;
+                ungrabMouse();
+            }
+            else
+            {
+                closestTile->setTileType(GroundTile);
+                game->pathFinder->calcPath();
+            }
         }
     }
 }

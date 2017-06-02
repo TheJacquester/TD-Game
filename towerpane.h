@@ -36,13 +36,13 @@ private:
     IntelTower* intelTower;
     UltiTower* ultiTower;
 
-//Tower costs
-    int normalPrice = 10;
-    int frostPrice = 40;
-    int intelPrice = 80;
-    int ultiPrice = 150;
     const qreal towerScaleFactor = 1; //Tower Scale Factor on Button
 
+//Cost
+    int normalPrice;
+    int frostPrice;
+    int intelPrice;
+    int ultiPrice;
 signals:
 
 public slots:

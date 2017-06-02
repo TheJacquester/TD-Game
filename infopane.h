@@ -29,10 +29,16 @@ public:
     void decreaseGold(int value);
     void increaseGold(int value);
 
+    //Tower costs
+    int normalPrice = 8;
+    int frostPrice = 40;
+    int intelPrice = 80;
+    int ultiPrice = 200;
+
 private:
     int wave, lives;
-    int income = 3;
-    int gold = 2000;
+    int income = 10;
+    int gold = 200;
     QLabel *waveText, *livesText, *incomeText,
             *goldText, *nextWaveTimeText;
     QLabel *waveVal, *livesVal, *incomeVal,

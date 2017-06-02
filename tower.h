@@ -34,7 +34,7 @@ public:
 
 protected:
     int W, H;
-    int bulletDamage;
+    int bulletDamage, buyPrice, sellPrice, upgradePrice;
     qreal range;
     Enemy *target;
     bool targetAcquired = false;
@@ -42,13 +42,20 @@ protected:
     QGraphicsScene *scene;
     Map *map;
 
+    //Upgrade
+    QPixmap upgradePix;
+    bool upgraded = false;
+
+    //Bullet
     qreal dist(QPointF p1, QPointF p2);
     QPointF targetPoint;
+    QString bulletPixPath;
 
+    //Place
     void setRange(qreal r);
     bool placable(); //checks if tower will block path
-
-    QString bulletPixPath;
+    bool placed = false;
+    Tile *currentTile;
 
 public slots:
     void setTarget();
