@@ -16,23 +16,36 @@ TowerPane::TowerPane(QWidget *parent) : QWidget(parent)
     initLabels();
 
 //tower buttons
+    QString butStyle = "background-color: black;"
+                       "border-style: outset;"
+                       "border-width: 2px;"
+                       "border-radius: 5px;"
+                       "border-color: beige;"
+                       "font: bold 14px;"
+                       "color: white;"
+                       "min-width: 10em;"
+                       "padding: 6px;";
     const QSize towerButSize = QSize(150,100);
     normalTowerBut = new QToolButton(this);
+    normalTowerBut->setStyleSheet(butStyle);
     normalTowerBut->setMinimumSize(towerButSize);
     normalTowerBut->setIcon(QIcon(game->normalTowerPath));
     normalTowerBut->setIconSize(towerButSize);
 
     frostTowerBut = new QToolButton(this);
+    frostTowerBut->setStyleSheet(butStyle);
     frostTowerBut->setMinimumSize(towerButSize);
     frostTowerBut->setIcon(QIcon(game->frostTowerPath));
     frostTowerBut->setIconSize(towerButSize);
 
     intelTowerBut = new QToolButton(this);
+    intelTowerBut->setStyleSheet(butStyle);
     intelTowerBut->setMinimumSize(towerButSize);
     intelTowerBut->setIcon(QIcon(game->intelTowerPath));
     intelTowerBut->setIconSize(towerButSize);
 
     ultiTowerBut = new QToolButton(this);
+    ultiTowerBut->setStyleSheet(butStyle);
     ultiTowerBut->setMinimumSize(towerButSize);
     ultiTowerBut->setIcon(QIcon(game->ultiTowerPath));
     ultiTowerBut->setIconSize(towerButSize);

@@ -67,18 +67,31 @@ InfoPane::InfoPane(QWidget *parent) : QWidget(parent)
     gridLayout->addWidget(incomeVal,i,1);
 
 //Buttons
+    QString butStyle = "background-color: black;"
+                       "border-style: outset;"
+                       "border-width: 2px;"
+                       "border-radius: 5px;"
+                       "border-color: beige;"
+                       "font: bold 14px;"
+                       "color: white;"
+                       "min-width: 10em;"
+                       "padding: 6px;";
     ++i;
-    spawnEnemy = new QPushButton(QIcon(game->smallEnemyPixmapPath),"Spawn Enemy",this);
+//    spawnEnemy = new QPushButton(QIcon(QPixmap(game->smallEnemyPixmapPath).copy(0,0,10,25).scaledToWidth(200)),"Spawn Enemy",this);
+    spawnEnemy = new QPushButton("Spawn Enemy",this);
+    spawnEnemy->setStyleSheet(butStyle);
     gridLayout->addWidget(spawnEnemy,i,0,1,0);
     connect(spawnEnemy,SIGNAL(clicked(bool)),this,SLOT(infoSpawnEnemyClicked()));
 
     ++i;
     nextWave = new QPushButton("Start Next Wave",this);
+    nextWave->setStyleSheet(butStyle);
     gridLayout->addWidget(nextWave,i,0,1,0);
     connect(nextWave,SIGNAL(clicked(bool)),this,SLOT(infoNextWaveClicked()));
 
     ++i;
     quitGame = new QPushButton("Quit Game",this);
+    quitGame->setStyleSheet(butStyle);
     gridLayout->addWidget(quitGame,i,0,1,0);
     connect(quitGame,SIGNAL(clicked(bool)),game,SLOT(endGame()));
 }

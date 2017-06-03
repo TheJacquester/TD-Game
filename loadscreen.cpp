@@ -36,14 +36,26 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
     mainWidget->setLayout(grid);
 
     //Buttons
+    butStyle = "background-color: black;"
+               "border-style: outset;"
+               "border-width: 2px;"
+               "border-radius: 5px;"
+               "border-color: beige;"
+               "font: bold 14px;"
+               "color: white;"
+               "min-width: 10em;"
+               "padding: 6px;";
+
     singlePlayerBut = new QToolButton(this);
-    singlePlayerBut->setMinimumSize(W - 20,30);
+    singlePlayerBut->setStyleSheet(butStyle);
+    singlePlayerBut->setMinimumSize(W - 20,35);
     grid->addWidget(singlePlayerBut,0,0,1,0,Qt::AlignHCenter);
     singlePlayerBut->setText("Single Player");
     singlePlayerBut->show();
     connect(singlePlayerBut,SIGNAL(clicked(bool)),this,SLOT(singlePlayerBut_clicked()));
 
     hostBut = new QToolButton(this);
+    hostBut->setStyleSheet(butStyle);
     hostBut->setMinimumSize(W/2 - 13,30);
     grid->addWidget(hostBut,1,0,Qt::AlignLeft);
     hostBut->setText("Host Game");
@@ -51,6 +63,7 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
     connect(hostBut,SIGNAL(clicked(bool)),this,SLOT(hostBut_clicked()));
 
     joinBut = new QToolButton(this);
+    joinBut->setStyleSheet(butStyle);
     joinBut->setMinimumSize(W/2 - 13,30);
     grid->addWidget(joinBut,1,1,Qt::AlignRight);
     joinBut->setText("Join Game");
@@ -74,7 +87,7 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
 
     wSpinBox = new QSpinBox(this);
     wSpinBox->setPalette(QPalette(Qt::black));
-    wSpinBox->setValue(10);
+    wSpinBox->setValue(5);
     wSpinBox->setMinimum(5);
     wSpinBox->setMaximum(50);
     wSpinBox->setMinimumWidth(50);
@@ -85,7 +98,7 @@ LoadScreen::LoadScreen(QWidget *parent) : QMainWindow(parent)
 
     hSpinBox = new QSpinBox(this);
     hSpinBox->setPalette(QPalette(Qt::black));
-    hSpinBox->setValue(10);
+    hSpinBox->setValue(5);
     hSpinBox->setMinimum(5);
     hSpinBox->setMaximum(50);
     hSpinBox->setMinimumWidth(50);

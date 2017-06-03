@@ -19,6 +19,9 @@ private:
     QToolButton *singlePlayerBut, *hostBut, *joinBut;
     bool multiPlayerMenuOpen = false;
 
+//Button Style
+    QString butStyle;
+
     QGridLayout *grid;
 //Window
     int W = 250, H = 400;

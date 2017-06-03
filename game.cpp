@@ -13,10 +13,17 @@ Game::Game()
 void Game::loadInterface()
 {
 //Place game window in the center of the screen
-    showFullScreen();
     move(QApplication::desktop()->screen()->rect().center() - this->rect().center());
-
+    setStyleSheet("background-color: black;"
+               "border-style: outset;"
+               "border-width: 2px;"
+               "border-radius: 5px;"
+               "border-color: beige;"
+               "font: bold 14px;"
+               "color: white;"
+               "padding: 6px;");
     this->setWindowTitle("Legion TD");
+    showFullScreen();
 //Custom CentralWidget for QMainWindow Requirements
     mainWidget = new QWidget;
     setCentralWidget(mainWidget);
@@ -110,6 +117,14 @@ void Game::gameOver()
     spawnTimer->stop();
 
     gameOverLabel = new QLabel(this);
+    gameOverLabel->setStyleSheet("background-color: white;"
+                                "border-style: outset;"
+                                "border-width: 2px;"
+                                "border-radius: 5px;"
+                                "border-color: beige;"
+                                "font: bold 14px;"
+                                "color: white;"
+                                "padding: 6px;");
     gameOverLabel->setPixmap(QPixmap(":/img/resources/gameOver.png"));
     int lblW = gameOverLabel->pixmap()->width();
     int lblH = gameOverLabel->pixmap()->height();
@@ -118,10 +133,10 @@ void Game::gameOver()
     gameOverLabel->show();
 
     resetBut = new QPushButton(this);
-    resetBut->setText("Reset Game");
+    resetBut->setText("Quit Game");
     int btnW = resetBut->width();
     int btnH = resetBut->height();
-    resetBut->move(this->width()/2 - btnW/2, gameOverLabel->y() + lblH - btnH);
+    resetBut->move(this->width()/2 - btnW/2, gameOverLabel->y() + lblH - btnH*1.5);
     resetBut->show();
 
     connect(resetBut,SIGNAL(clicked(bool)),this,SLOT(endGame()));
@@ -175,9 +190,18 @@ void Game::initEnemyPixmap()
 
 void Game::initZoom()
 {
+    QString butStyle = "background-color: black;"
+                       "border-style: outset;"
+                       "border-width: 2px;"
+                       "border-radius: 5px;"
+                       "border-color: beige;"
+                       "font: bold 14px;"
+                       "color: white;"
+                       "padding: 6px;";
     //zoom Buttons
         const QSize zoomButSize = QSize(30,30);
         zoomInBut = new QToolButton(this);
+        zoomInBut->setStyleSheet(butStyle);
         zoomInBut->setMinimumSize(zoomButSize);
         zoomInBut->setMaximumSize(zoomButSize);
         zoomInBut->setText("+");
@@ -186,6 +210,7 @@ void Game::initZoom()
         connect(zoomInBut,SIGNAL(clicked(bool)),this,SLOT(zoomIn()));
 
         zoomOutBut = new QToolButton(this);
+        zoomOutBut->setStyleSheet(butStyle);
         zoomOutBut->setMinimumSize(zoomButSize);
         zoomOutBut->setMaximumSize(zoomButSize);
         zoomOutBut->setText("-");

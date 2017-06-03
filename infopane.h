@@ -38,7 +38,7 @@ public:
 private:
     int wave, lives;
     int income = 10;
-    int gold = 200;
+    int gold = 1000;
     QLabel *waveText, *livesText, *incomeText,
             *goldText, *nextWaveTimeText;
     QLabel *waveVal, *livesVal, *incomeVal,

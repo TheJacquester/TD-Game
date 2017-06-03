@@ -37,6 +37,7 @@ public:
     void hostMode();
     void joinMode();
     void singlePlayerMode();
+
     void gameOver();
 
 //Game info
