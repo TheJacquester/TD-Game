@@ -23,7 +23,7 @@ void Game::loadInterface()
                "color: white;"
                "padding: 6px;");
     this->setWindowTitle("Legion TD");
-    showFullScreen();
+//    showFullScreen();
 //Custom CentralWidget for QMainWindow Requirements
     mainWidget = new QWidget;
     setCentralWidget(mainWidget);
@@ -106,6 +106,7 @@ void Game::singlePlayerMode()
     show();
     startGame();
     info->spawnEnemy->hide();
+    multiplayer = false;
 }
 
 void Game::gameOver()
@@ -125,12 +126,25 @@ void Game::gameOver()
                                 "font: bold 14px;"
                                 "color: white;"
                                 "padding: 6px;");
-    gameOverLabel->setPixmap(QPixmap(":/img/resources/gameOver.png"));
+    if (multiplayer)
+    {
+        if (won)
+            gameOverLabel->setPixmap(QPixmap(":/img/resources/win.png"));
+        else
+        {
+            gameOverLabel->setPixmap(QPixmap(":/img/resources/lose.png"));
+            host->write(host->go);
+        }
+    }
+    else
+        gameOverLabel->setPixmap(QPixmap(":/img/resources/gameOver.png"));
+
     int lblW = gameOverLabel->pixmap()->width();
     int lblH = gameOverLabel->pixmap()->height();
     gameOverLabel->setMinimumSize(lblW,lblH);
     gameOverLabel->move(width()/2 - lblW/2,height()/2 - lblH);
     gameOverLabel->show();
+
 
     resetBut = new QPushButton(this);
     resetBut->setText("Quit Game");
@@ -144,6 +158,7 @@ void Game::gameOver()
     view->setEnabled(false);
     towerPane->setTowerPaneEnabled(false);
     info->setEnabled(false);
+
 }
 
 void Game::decreaseLives()
@@ -163,12 +178,14 @@ void Game::setMapSize(int w, int h)
     mapH = h;
 }
 
-void Game::spawnEnemy()
+void Game::spawnEnemy(EnemyType type)
 {
+    qDebug() << "spawnEnemy()";
+
     pathFinder = new PathFinder(map,scene);
     path = pathFinder->calcPath(); //calculate path and return a path of points
 
-    Enemy *e = new Enemy();
+    Enemy *e = new Enemy(type);
     enemies.append(e);
     connect(timer,SIGNAL(timeout()),e,SLOT(hop()));
     scene->addItem(enemies.last());
@@ -186,6 +203,10 @@ void Game::initEnemyPixmap()
     h = 25;
     for(int i = 0; i <= 10; ++i )
         smallEnemySprites.append(p.copy(i*w,0,w,h));
+
+    p = QPixmap(":/img/resources/ouBill.png");
+    for(int i = 0; i <= 10; ++i )
+        ouBillEnemySprites.append(p);
 }
 
 void Game::initZoom()
@@ -300,6 +321,7 @@ void Game::waveStart()
     info->quitGame->setEnabled(false);
     waveActive = true;
     waveTimer->stop();
+    qDebug() << "wave start()";
 }
 
 void Game::waveStop()
@@ -334,7 +356,7 @@ void Game::spawnWaveEnemies()
 {
     if (spawnCount < maxEnemies)
     {
-        spawnEnemy();
+        spawnEnemy(small);
         spawnCount++;
     }
 }

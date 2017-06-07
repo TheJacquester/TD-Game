@@ -22,6 +22,9 @@
         <file>resources/ultiUpgrade.png</file>
         <file>resources/loadBackground.png</file>
         <file>resources/smallGreen.png</file>
+        <file>resources/ouBill.png</file>
+        <file>resources/win.png</file>
+        <file>resources/lose.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>resources/coinSound.wav</file>

@@ -4,14 +4,22 @@
 extern int zMax;
 extern Game *game;
 
-Enemy::Enemy()
+Enemy::Enemy(EnemyType e)
 {
     healthMax = game->healtMax;
     map = game->map;
     scene = game->scene;
     path = game->path;
+    type = e;
+
+    setScale(10);
 
 //Pixmap
+    if (type == ouBill){
+        sprites = game->ouBillEnemySprites;
+        setScale(3);
+    }
+    else {
     if (game->getWave() >= 2) //start spawing large enemies
     {
         if(game->getWave() >= 3) //start spawing only large enemies
@@ -32,9 +40,9 @@ Enemy::Enemy()
     }
     else
         sprites = game->smallEnemySprites;
+    }
 
     setPixmap(sprites.at(0));
-    setScale(10);
     W = pixmap().width();
     H = pixmap().height();
     setOffset(-W/2,-H/1.25);

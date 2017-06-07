@@ -138,6 +138,7 @@ void LoadScreen::hostBut_clicked()
 {
     qDebug() << "host game";
     game = new Game;
+    game->setMapSize(wSpinBox->value(),hSpinBox->value());
     game->hostMode();
     this->deleteLater();
 }
@@ -154,6 +155,8 @@ void LoadScreen::joinBut_clicked()
         game->initHost();
         game->host->setOpponentIP(QHostAddress(IP));
         game->host->writeACK();
+
+        game->setMapSize(wSpinBox->value(),hSpinBox->value());
 
         game->joinMode();
 //        qDebug() << "Join game with host IP: " << IP;

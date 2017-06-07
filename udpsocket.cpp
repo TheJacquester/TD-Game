@@ -28,7 +28,12 @@ void UdpSocket::writeACK()
 void UdpSocket::processData(QNetworkDatagram datagram)
 {
     if (datagram.data() == spwn)
-        game->spawnEnemy();
+        game->spawnEnemy(ouBill);
+    if (datagram.data() == go)
+    {
+        game->won = true;
+        game->gameOver();
+    }
     if (datagram.data() == ack)
     {
         game->opponentConnected = true;

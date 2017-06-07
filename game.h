@@ -40,6 +40,9 @@ public:
 
     void gameOver();
 
+    bool won = false;
+    bool multiplayer = true;
+
 //Game info
     void decreaseLives();
     QLabel *gameOverLabel;
@@ -65,9 +68,9 @@ public:
     QList <Tile*> path;
 
 //Enemy
-    void spawnEnemy();
+    void spawnEnemy(EnemyType type);
     void initEnemyPixmap();
-    QList <QPixmap> largeEnemySprites, smallEnemySprites;
+    QList <QPixmap> largeEnemySprites, smallEnemySprites, ouBillEnemySprites;
     QList <Enemy*> enemies;
     int maxEnemies = 10;
     int spawnCount = 0;
@@ -99,7 +102,7 @@ public:
     QTimer *startGameTimer,*timer, *bulletTimer, *fireTimer,
             *waveTimer, *spawnTimer, *secTimer;
     int gameSpeed = 50; //Game step speed (msec)
-    int waveTime = 20000;
+    int waveTime = 15000;
     int spawnTime = 500;
     int startGamePollTime = 500;
     int getLives() const;
@@ -120,7 +123,7 @@ private:
 
 //game info
     int wave = 1;
-    int lives = 1;
+    int lives = 20;
 
 private slots:
     void nextWave();

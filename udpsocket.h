@@ -18,6 +18,7 @@ public:
     //UDP codewords
     const QString spwn = "spwn"; //send new enemy to opponent
     const QString ack = "ACK";
+    const QString go = "GO";
 
     QHostAddress getOpponentIP() const;
     void setOpponentIP(const QHostAddress &value);

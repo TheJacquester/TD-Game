@@ -174,10 +174,12 @@ debug/qrc_res.cpp: res.qrc \
 		icon.ico \
 		resources/frostArrow.png \
 		resources/fireArrow.png \
+		resources/ouBill.png \
 		resources/superGreen.png \
 		resources/normal.png \
 		resources/gameOver.png \
 		resources/normalUpgrade.png \
+		resources/win.png \
 		resources/ulti.png \
 		resources/frost.png \
 		resources/intelArrow.png \
@@ -185,6 +187,7 @@ debug/qrc_res.cpp: res.qrc \
 		resources/gameBackground.jpg \
 		resources/smoke.png \
 		resources/flameEnemy.png \
+		resources/lose.png \
 		resources/ultiArrow.png \
 		resources/intel.png \
 		resources/intelUpgrade.png \

@@ -16,23 +16,31 @@
 #include <QSound>
 
 #include "map.h"
+
+enum EnemyType {
+    small,
+    large,
+    ouBill
+};
+
 class Enemy: public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Enemy();
+    Enemy(EnemyType e);
     ~Enemy();
     qreal collisionRadius = 70; //collision radius
     void takeDamage(int damage);
     void setHopSkipMax(int value);
 
+    EnemyType type;
 private:
     //properties
     int W, H; //width and height of enemy pixmap
     int pathPos = 0;
     int healthMax;
     int health = 0;
-    int gold = 2;
+    int gold = 10;
 
 //Sound
     QSound *coinSound;
